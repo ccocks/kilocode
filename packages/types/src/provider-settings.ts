@@ -18,6 +18,7 @@ import {
 	// geminiModels,
 	// kilocode_change end
 	groqModels,
+	decaModels,
 	ioIntelligenceModels,
 	mistralModels,
 	moonshotModels,
@@ -141,6 +142,7 @@ export const providerNames = [
 	"gemini",
 	"gemini-cli",
 	"groq",
+	"deca",
 	"mistral",
 	"moonshot",
 	"openai-native",
@@ -391,6 +393,10 @@ const groqSchema = apiModelIdProviderModelSchema.extend({
 	groqApiKey: z.string().optional(),
 })
 
+const decaSchema = apiModelIdProviderModelSchema.extend({
+	groqApiKey: z.string().optional(),
+})
+
 const huggingFaceSchema = baseProviderSettingsSchema.extend({
 	huggingFaceApiKey: z.string().optional(),
 	huggingFaceModelId: z.string().optional(),
@@ -545,6 +551,7 @@ export const providerSettingsSchemaDiscriminated = z.discriminatedUnion("apiProv
 	inceptionSchema.merge(z.object({ apiProvider: z.literal("inception") })),
 	// kilocode_change end
 	groqSchema.merge(z.object({ apiProvider: z.literal("groq") })),
+	decaSchema.merge(z.object({ apiProvider: z.literal("deca") })),
 	huggingFaceSchema.merge(z.object({ apiProvider: z.literal("huggingface") })),
 	chutesSchema.merge(z.object({ apiProvider: z.literal("chutes") })),
 	litellmSchema.merge(z.object({ apiProvider: z.literal("litellm") })),
@@ -594,6 +601,7 @@ export const providerSettingsSchema = z.object({
 	...fakeAiSchema.shape,
 	...xaiSchema.shape,
 	...groqSchema.shape,
+	...decaSchema.shape,
 	...huggingFaceSchema.shape,
 	...chutesSchema.shape,
 	...litellmSchema.shape,
@@ -690,6 +698,7 @@ export const modelIdKeysByProvider: Record<TypicalProvider, ModelIdKey> = {
 	inception: "inceptionLabsModelId",
 	// kilocode_change end
 	groq: "apiModelId",
+	deca: "apiModelId",
 	chutes: "apiModelId",
 	litellm: "litellmModelId",
 	huggingface: "huggingFaceModelId",
@@ -787,6 +796,7 @@ export const MODELS_BY_PROVIDER: Record<
 	//},
 	// kilocode_change end
 	groq: { id: "groq", label: "Groq", models: Object.keys(groqModels) },
+	deca: { id: "deca", label: "Deca", models: Object.keys(decaModels) },
 	"io-intelligence": {
 		id: "io-intelligence",
 		label: "IO Intelligence",
