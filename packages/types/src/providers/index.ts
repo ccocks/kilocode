@@ -17,6 +17,7 @@ export * from "./minimax.js"
 // kilocode_change end
 export * from "./glama.js"
 export * from "./groq.js"
+export * from "./deca.js"
 export * from "./huggingface.js"
 export * from "./io-intelligence.js"
 export * from "./lite-llm.js"
