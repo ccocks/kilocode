@@ -454,6 +454,7 @@ const ApiOptions = ({
 		// kilocode_change start
 		// Providers that don't have documentation pages yet
 		const excludedProviders = [
+			"agentica",
 			"gemini-cli",
 			"moonshot",
 			"chutes",

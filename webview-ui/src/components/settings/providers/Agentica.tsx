@@ -11,21 +11,10 @@ export const Agentica: React.FC<AgenticaProps> = ({ apiConfiguration, setApiConf
 	return (
 		<>
 			<VSCodeTextField
-				value={apiConfiguration.agenticaBaseUrl || ""}
-				onChange={(e: any) => setApiConfigurationField("agenticaBaseUrl", e.target.value)}
-				placeholder="https://api.genlabs.dev/deca/v1"
-				style={{ width: "100%" }}>
-				<span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-					Base URL
-					<span style={{ opacity: 0.7, fontSize: "0.9em" }}>(optional)</span>
-				</span>
-			</VSCodeTextField>
-
-			<VSCodeTextField
 				value={apiConfiguration.agenticaEmail || ""}
 				onChange={(e: any) => setApiConfigurationField("agenticaEmail", e.target.value)}
 				placeholder="your-email@example.com"
-				style={{ width: "100%", marginTop: "8px" }}>
+				style={{ width: "100%" }}>
 				<span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
 					Email
 					<span style={{ opacity: 0.7, fontSize: "0.9em" }}>(required)</span>
