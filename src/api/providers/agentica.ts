@@ -57,7 +57,7 @@ export class AgenticaHandler extends BaseProvider implements SingleCompletionHan
 			stream: false,
 		})
 
-		return stream.choices[0]?.message?.content || ""
+		return stream.choices?.[0]?.message?.content || ""
 	}
 
 	private async generateApiKey(): Promise<string> {
@@ -101,7 +101,7 @@ export class AgenticaHandler extends BaseProvider implements SingleCompletionHan
 		})
 
 		for await (const chunk of stream) {
-			const delta = chunk.choices[0]?.delta
+			const delta = chunk.choices?.[0]?.delta
 			if (delta?.content) {
 				yield {
 					type: "text",

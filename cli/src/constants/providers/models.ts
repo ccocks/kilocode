@@ -91,6 +91,7 @@ export interface ModelInfo {
 	description?: string
 	displayName?: string | null
 	preferredIndex?: number | null
+	creditsMultiplier?: number
 }
 
 export type ModelRecord = Record<string, ModelInfo>
