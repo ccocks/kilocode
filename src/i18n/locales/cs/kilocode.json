@@ -51,7 +51,7 @@
 		}
 	},
 	"commitMessage": {
-		"activated": "Generátor zpráv pro commit Agentica aktivován",
+		"activated": "Generátor zpráv pro commit Kilo Code aktivován",
 		"gitNotFound": "⚠️ Git repozitář nebyl nalezen nebo git není dostupný",
 		"gitInitError": "⚠️ Chyba inicializace Gitu: {{error}}",
 		"generating": "Kilo: Generuji zprávu commitu...",
@@ -63,7 +63,7 @@
 		"providerRegistered": "Kilo: Poskytovatel zpráv commitů zaregistrován",
 		"errors": {
 			"noProject": "Žádný projekt k dispozici",
-			"connectionFailed": "Nepodařilo se připojit k rozšíření Agentica",
+			"connectionFailed": "Nepodařilo se připojit k rozšíření Kilo Code",
 			"timeout": "Časový limit požadavku vypršel po 30 sekundách",
 			"invalidResponse": "Neplatný formát odpovědi obdržen od rozšíření",
 			"missingMessage": "Z rozšíření nebyla přijata žádná zpráva o commitu",
@@ -87,7 +87,7 @@
 		},
 		"progress": {
 			"title": "Generování Commit Message",
-			"connecting": "Připojování k Agentica...",
+			"connecting": "Připojování k Kilo Code...",
 			"analyzing": "Analyzuji změny...",
 			"generating": "Generuji zprávu commitu..."
 		},
@@ -104,12 +104,12 @@
 	},
 	"ghost": {
 		"statusBar": {
-			"enabled": "$(sparkle) Agentica Autocomplete",
-			"disabled": "$(circle-slash) Agentica Autocomplete",
-			"warning": "$(warning) Agentica Autocomplete",
+			"enabled": "$(sparkle) Kilo Code Autocomplete",
+			"disabled": "$(circle-slash) Kilo Code Autocomplete",
+			"warning": "$(warning) Kilo Code Autocomplete",
 			"tooltip": {
-				"basic": "Agentica Autocomplete",
-				"disabled": "Agentica Autocomplete (zakázáno)",
+				"basic": "Kilo Code Autocomplete",
+				"disabled": "Kilo Code Autocomplete (zakázáno)",
 				"tokenError": "Pro použití Autocomplete musí být nastaven platný token",
 				"lastCompletion": "Poslední návrh:",
 				"sessionTotal": "Celkové náklady relace:",
@@ -121,36 +121,36 @@
 				"lessThanCent": "<$0.01"
 			}
 		},
-		"toggleMessage": "Agentica Autocomplete {{status}}",
+		"toggleMessage": "Kilo Code Autocomplete {{status}}",
 		"progress": {
-			"title": "Agentica",
+			"title": "Kilo Code",
 			"analyzing": "Analyzuji tvůj kód...",
 			"generating": "Generuji navrhované úpravy...",
 			"processing": "Zpracovávám navrhované úpravy...",
 			"showing": "Zobrazuji navrhované úpravy..."
 		},
 		"input": {
-			"title": "Agentica: Rychlý úkol",
+			"title": "Kilo Code: Rychlý úkol",
 			"placeholder": "např. 'refaktoruj tuto funkci, aby byla efektivnější'"
 		},
 		"commands": {
-			"generateSuggestions": "Agentica: Generovat navrhované úpravy",
+			"generateSuggestions": "Kilo Code: Generovat navrhované úpravy",
 			"displaySuggestions": "Zobrazit navrhované úpravy",
 			"cancelSuggestions": "Zrušit navrhované úpravy",
 			"applyCurrentSuggestion": "Použít aktuální navrhovanou úpravu",
 			"applyAllSuggestions": "Použít všechny navrhované úpravy",
-			"category": "Agentica"
+			"category": "Kilo Code"
 		},
 		"codeAction": {
-			"title": "Agentica: Navrhované úpravy"
+			"title": "Kilo Code: Navrhované úpravy"
 		},
 		"chatParticipant": {
-			"fullName": "Agentica Agent",
+			"fullName": "Kilo Code Agent",
 			"name": "Agent",
 			"description": "Mohu ti pomoci s rychlými úkoly a navrženými úpravami."
 		},
 		"incompatibilityExtensionPopup": {
-			"message": "Agentica Autocomplete je blokováno konfliktem s GitHub Copilot. Pro vyřešení tohoto problému musíš zakázat inline návrhy Copilot.",
+			"message": "Kilo Code Autocomplete je blokováno konfliktem s GitHub Copilot. Pro vyřešení tohoto problému musíš zakázat inline návrhy Copilot.",
 			"disableCopilot": "Zakázat Copilot",
 			"disableInlineAssist": "Zakázat Autocomplete"
 		}
