@@ -454,6 +454,7 @@ const ApiOptions = ({
 		// kilocode_change start
 		// Providers that don't have documentation pages yet
 		const excludedProviders = [
+			"agentica",
 			"gemini-cli",
 			"moonshot",
 			"chutes",
@@ -493,7 +494,6 @@ const ApiOptions = ({
 		[],
 	)
 	// kilocode_change end
-
 	return (
 		<div className="flex flex-col gap-3">
 			<div className="flex flex-col gap-1 relative">
