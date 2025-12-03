@@ -32,7 +32,7 @@ jobs:
         id: find_version
         run: |
           # Find the .vsix file in the .bin folder
-          vsix_file=$(find .bin -name '*.vsix' -print -quit)
+          vsix_file=$(find ./bin -name '*.vsix' -print -quit)
           if [ -z "$vsix_file" ]; then
             echo "No .vsix file found in bin"
             exit 1
