@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - .bin/** # Only trigger if something changes in the .bin folder
+      - bin/** # Only trigger if something changes in the .bin folder
   workflow_dispatch: # Manual trigger for the workflow
 
 jobs:
@@ -34,7 +34,7 @@ jobs:
           # Find the .vsix file in the .bin folder
           vsix_file=$(find .bin -name '*.vsix' -print -quit)
           if [ -z "$vsix_file" ]; then
-            echo "No .vsix file found in .bin"
+            echo "No .vsix file found in bin"
             exit 1
           fi
 
