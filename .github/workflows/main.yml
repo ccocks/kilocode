@@ -61,7 +61,7 @@ jobs:
             echo "release_exists=true" >> $GITHUB_ENV
 
       # Step 5: Create release if it doesn't exist
-      - name: Create a release if it doesn't exist
+      - name: Create a release if it doesnt exist
         if: env.release_exists == 'false'
         run: |
           # Create a GitHub release using the GitHub API
