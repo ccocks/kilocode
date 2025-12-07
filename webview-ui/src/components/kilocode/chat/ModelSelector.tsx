@@ -9,6 +9,15 @@ import { useProviderModels } from "../hooks/useProviderModels"
 import { getModelIdKey, getSelectedModelId } from "../hooks/useSelectedModel"
 import { usePreferredModels } from "@/components/ui/hooks/kilocode/usePreferredModels"
 
+// Helper function to format cost for Agentica models
+const formatAgenticaCost = (creditsMultiplier?: number): string => {
+	if (creditsMultiplier === undefined || creditsMultiplier === 0) {
+		return "Free"
+	}
+	const cost = creditsMultiplier * 0.001
+	return `$${cost.toFixed(3)}`
+}
+
 interface ModelSelectorProps {
 	currentApiConfigName?: string
 	apiConfiguration: ProviderSettings
@@ -34,12 +43,24 @@ export const ModelSelector = ({
 	const modelsIds = usePreferredModels(providerModels)
 	const options = useMemo(() => {
 		const missingModelIds = modelsIds.indexOf(selectedModelId) >= 0 ? [] : [selectedModelId]
-		return missingModelIds.concat(modelsIds).map((modelId) => ({
-			value: modelId,
-			label: providerModels[modelId]?.displayName ?? prettyModelName(modelId),
-			type: DropdownOptionType.ITEM,
-		}))
-	}, [modelsIds, providerModels, selectedModelId])
+		return missingModelIds.concat(modelsIds).map((modelId) => {
+			const modelInfo = providerModels[modelId]
+			const modelName = modelInfo?.displayName ?? prettyModelName(modelId)
+			
+			// Add cost information for Agentica models
+			let label = modelName
+			if (provider === "agentica" && modelInfo?.creditsMultiplier !== undefined) {
+				const cost = formatAgenticaCost(modelInfo.creditsMultiplier)
+				label = `${modelName} (${cost})`
+			}
+			
+			return {
+				value: modelId,
+				label,
+				type: DropdownOptionType.ITEM,
+			}
+		})
+	}, [modelsIds, providerModels, selectedModelId, provider])
 
 	const disabled = isLoading || isError
 

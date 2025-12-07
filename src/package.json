@@ -301,6 +301,26 @@
 				"command": "agentica.showTotalSaved",
 				"title": "Agentica: Show Total Saved",
 				"category": "Agentica"
+			},
+			{
+				"command": "agentica.testMilestones",
+				"title": "Agentica: Test Milestones",
+				"category": "Agentica"
+			},
+			{
+				"command": "agentica.showSavings",
+				"title": "Agentica: Show Savings Dashboard",
+				"category": "Agentica"
+			},
+			{
+				"command": "agentica.resetSavings",
+				"title": "Agentica: Reset Savings",
+				"category": "Agentica"
+			},
+			{
+				"command": "agentica.exportSavings",
+				"title": "Agentica: Export Savings",
+				"category": "Agentica"
 			}
 		],
 		"menus": {

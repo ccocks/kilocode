@@ -121,19 +121,17 @@ describe("Cost Utility", () => {
 
 			const result = calculateApiCostAnthropic(modelWithCreditsMultiplier, 1000, 500)
 
-			// Base cost: 0.003 + 0.0075 = 0.0105
-			// With 5x multiplier: 0.0105 * 5 = 0.0525
-			expect(result.totalCost).toBe(0.0525)
+			// Cost = creditsMultiplier * $0.001 = 5 * 0.001 = $0.005
+			expect(result.totalCost).toBe(0.005)
 			expect(result.totalInputTokens).toBe(1000)
 			expect(result.totalOutputTokens).toBe(500)
 		})
 
-		it("should handle missing credits multiplier (default to 1x)", () => {
+		it("should handle missing credits multiplier (default to 0x)", () => {
 			const result = calculateApiCostAnthropic(mockModelInfo, 1000, 500)
 
-			// Should use default multiplier of 1
-			// Base cost: 0.003 + 0.0075 = 0.0105
-			expect(result.totalCost).toBe(0.0105)
+			// Should use default multiplier of 0 (free)
+			expect(result.totalCost).toBe(0)
 			expect(result.totalInputTokens).toBe(1000)
 			expect(result.totalOutputTokens).toBe(500)
 		})
@@ -146,8 +144,7 @@ describe("Cost Utility", () => {
 
 			const result = calculateApiCostAnthropic(freeModel, 1000, 500)
 
-			// Base cost: 0.003 + 0.0075 = 0.0105
-			// With 0x multiplier: 0.0105 * 0 = 0 (free)
+			// Cost = 0 * $0.001 = $0 (free)
 			expect(result.totalCost).toBe(0)
 			expect(result.totalInputTokens).toBe(1000)
 			expect(result.totalOutputTokens).toBe(500)
@@ -270,19 +267,17 @@ describe("Cost Utility", () => {
 
 			const result = calculateApiCostOpenAI(modelWithCreditsMultiplier, 1000, 500)
 
-			// Base cost: 0.003 + 0.0075 = 0.0105
-			// With 10x multiplier: 0.0105 * 10 = 0.105
-			expect(result.totalCost).toBe(0.105)
+			// Cost = creditsMultiplier * $0.001 = 10 * 0.001 = $0.01
+			expect(result.totalCost).toBe(0.01)
 			expect(result.totalInputTokens).toBe(1000)
 			expect(result.totalOutputTokens).toBe(500)
 		})
 
-		it("should handle missing credits multiplier (default to 1x)", () => {
+		it("should handle missing credits multiplier (default to 0x)", () => {
 			const result = calculateApiCostOpenAI(mockModelInfo, 1000, 500)
 
-			// Should use default multiplier of 1
-			// Base cost: 0.003 + 0.0075 = 0.0105
-			expect(result.totalCost).toBe(0.0105)
+			// Should use default multiplier of 0 (free)
+			expect(result.totalCost).toBe(0)
 			expect(result.totalInputTokens).toBe(1000)
 			expect(result.totalOutputTokens).toBe(500)
 		})
