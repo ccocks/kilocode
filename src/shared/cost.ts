@@ -15,12 +15,10 @@ function calculateApiCostInternal(
 	totalInputTokens: number,
 	totalOutputTokens: number,
 ): ApiCostResult {
-	const cacheWritesCost = ((modelInfo.cacheWritesPrice || 0) / 1_000_000) * cacheCreationInputTokens
-	const cacheReadsCost = ((modelInfo.cacheReadsPrice || 0) / 1_000_000) * cacheReadInputTokens
-	const baseInputCost = ((modelInfo.inputPrice || 0) / 1_000_000) * inputTokens
-	const outputCost = ((modelInfo.outputPrice || 0) / 1_000_000) * outputTokens
-	const creditsMultiplier = modelInfo.creditsMultiplier || 1
-	const totalCost = (cacheWritesCost + cacheReadsCost + baseInputCost + outputCost) * creditsMultiplier
+	// For Agentica models, the cost is based on creditsMultiplier, not token-based pricing
+	// Cost = creditsMultiplier * $0.001 (where 10 credits = 1 cent)
+	const creditsMultiplier = modelInfo.creditsMultiplier || 0
+	const totalCost = creditsMultiplier * 0.001 // $0.001 per credit
 
 	return {
 		totalInputTokens,
