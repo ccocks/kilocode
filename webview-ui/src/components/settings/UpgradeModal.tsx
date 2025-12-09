@@ -9,9 +9,22 @@ interface UpgradeModalProps {
     isDowngrade: boolean
     client: AgenticaClient
     onSuccess: (data: UpgradeResponse) => void
+    email: string
+    currentCredits: number
+    planCost: number
 }
 
-export const UpgradeModal: React.FC<UpgradeModalProps> = ({ isOpen, onClose, planId, isDowngrade, client, onSuccess }) => {
+export const UpgradeModal: React.FC<UpgradeModalProps> = ({
+    isOpen,
+    onClose,
+    planId,
+    isDowngrade,
+    client,
+    onSuccess,
+    email,
+    currentCredits,
+    planCost,
+}) => {
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
 
@@ -60,23 +73,38 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({ isOpen, onClose, pla
                     gap: "16px",
                 }}>
                 <h2 style={{ margin: 0, fontSize: "1.5em" }}>
-                    {isDowngrade ? "Confirm Downgrade" : `Upgrade to ${planId.charAt(0).toUpperCase() + planId.slice(1)}`}
+                    {isDowngrade ? "Confirm Downgrade" : "Spend Credits"}
                 </h2>
 
                 {isDowngrade ? (
-                    <p>
-                        Your plan will switch to <strong>{planId}</strong> at the end of your current billing cycle. You will
-                        retain your current benefits until then.
-                    </p>
+                    <div style={{ color: "var(--vscode-foreground)", lineHeight: "1.4" }}>
+                        <p>
+                            Your plan will switch to <strong style={{ color: "var(--vscode-textLink-foreground)" }}>{planId}</strong> at the end of your current billing cycle.
+                        </p>
+                        <div
+                            style={{
+                                marginTop: "12px",
+                                padding: "8px 12px",
+                                background: "var(--vscode-editor-inactiveSelectionBackground)",
+                                borderLeft: "3px solid var(--vscode-charts-yellow)",
+                                fontSize: "0.9em"
+                            }}>
+                            <strong>Note:</strong> No pro-rated refund will be given for the remaining time on your current plan.
+                        </div>
+                    </div>
                 ) : (
-                    <div
-                        style={{
-                            background: "var(--vscode-inputValidation-warningBackground)",
-                            border: "1px solid var(--vscode-inputValidation-warningBorder)",
-                            padding: "12px",
-                            borderRadius: "4px",
-                        }}>
-                        <strong>Important:</strong> Cost will be deducted from your GenLabs Balance.
+                    <div style={{ color: "var(--vscode-foreground)", lineHeight: "1.5" }}>
+                        <p style={{ margin: "0 0 12px 0" }}>
+                            <strong>{planCost} credits (${planCost / 1000})</strong> will be deducted from your GenLabs Account, <strong>{email}</strong>.
+                        </p>
+                        <p style={{ margin: "0" }}>
+                            You currently have <strong>{currentCredits}</strong>.
+                            {currentCredits < planCost && (
+                                <span style={{ color: "var(--vscode-errorForeground)", display: "block", marginTop: "8px" }}>
+                                    Buy more by signing into your GenLabs account.
+                                </span>
+                            )}
+                        </p>
                     </div>
                 )}
 
@@ -92,11 +120,15 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({ isOpen, onClose, pla
                     </div>
                 )}
 
-                <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px" }}>
+                <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px", marginTop: "8px" }}>
                     <VSCodeButton appearance="secondary" onClick={onClose} disabled={loading}>
                         Cancel
                     </VSCodeButton>
-                    <VSCodeButton onClick={handleConfirm} disabled={loading}>
+                    <VSCodeButton
+                        onClick={handleConfirm}
+                        disabled={loading || (!isDowngrade && currentCredits < planCost)}
+                        appearance="primary"
+                    >
                         {loading ? <VSCodeProgressRing style={{ height: "16px" }} /> : "Confirm"}
                     </VSCodeButton>
                 </div>
