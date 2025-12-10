@@ -168,7 +168,6 @@ const PlansView: React.FC<PlansViewProps> = ({ onDone }) => {
                 isDowngrade={isDowngrade}
                 client={client}
                 onSuccess={handleUpgradeSuccess}
-
             />
         </div>
     )

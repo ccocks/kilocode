@@ -67,7 +67,7 @@ export class AgenticaClient {
     }
 
     async getUserCredits(): Promise<{ credits: number }> {
-        const response = await axios.get("https://api.genlabs.dev/get_user_credits", {
+        const response = await axios.post("https://api.genlabs.dev/get_user_credits", {}, {
             headers: this.getHeaders(),
         })
         return response.data
