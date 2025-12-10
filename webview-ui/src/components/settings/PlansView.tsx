@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { VSCodeButton, VSCodeProgressRing, VSCodeLink } from "@vscode/webview-ui-toolkit/react"
+import { VSCodeButton, VSCodeProgressRing } from "@vscode/webview-ui-toolkit/react"
 import { AgenticaClient, SubscriptionResponse, UpgradeResponse } from "@/services/AgenticaClient"
 import { useExtensionState } from "@/context/ExtensionStateContext"
 import { PlanCard } from "./PlanCard"
@@ -18,6 +18,8 @@ const PlansView: React.FC<PlansViewProps> = ({ onDone }) => {
     const [upgradeModalOpen, setUpgradeModalOpen] = useState(false)
     const [selectedPlanId, setSelectedPlanId] = useState<string>("")
     const [isDowngrade, setIsDowngrade] = useState(false)
+    // In a real scenario, this should come from a wallet/balance endpoint or context
+    const [userCredits, setUserCredits] = useState(0)
 
     const client = new AgenticaClient(
         `${apiConfiguration?.agenticaEmail || ""}|${apiConfiguration?.agenticaPassword || ""}`,
@@ -30,6 +32,10 @@ const PlansView: React.FC<PlansViewProps> = ({ onDone }) => {
         try {
             const data = await client.getSubscription()
             setSubscription(data)
+
+            // Fetch actual user credits
+            const creditsData = await client.getUserCredits()
+            setUserCredits(creditsData.credits)
         } catch (err: any) {
             console.error("Failed to fetch subscription", err)
             setError("Failed to load subscription data. Please check your network or login status.")
@@ -84,11 +90,13 @@ const PlansView: React.FC<PlansViewProps> = ({ onDone }) => {
     const currentPlanId = subscription.data.plan_tier
 
     const plans = [
-        { id: "free", price: "$0", period: "month", features: ["Basic Models", "200 req/day"] },
-        { id: "plus", price: "$20", period: "month", features: ["Bonus Models", "$3.00/day Limit", "20k GenLabs Credits"] },
-        { id: "pro", price: "$50", period: "month", features: ["Bonus Models", "$10.00/day Limit", "50k GenLabs Credits"] },
-        { id: "max", price: "$200", period: "month", features: ["Bonus Models", "$30.00/day Limit", "200k GenLabs Credits"] },
+        { id: "free", price: "$0", period: "month", cost: 0, features: ["Basic Models", "200 req/day"] },
+        { id: "plus", price: "$20", period: "month", cost: 20000, features: ["Bonus Models", "$3.00/day Limit"] },
+        { id: "pro", price: "$50", period: "month", cost: 50000, features: ["Bonus Models", "$10.00/day Limit"] },
+        { id: "max", price: "$200", period: "month", cost: 200000, features: ["Bonus Models", "$30.00/day Limit"] },
     ]
+
+    const selectedPlan = plans.find(p => p.id === selectedPlanId)
 
     return (
         <div
@@ -123,7 +131,7 @@ const PlansView: React.FC<PlansViewProps> = ({ onDone }) => {
                     <UsageStats
                         dailyCreditsRemaining={subscription.data.daily_credits_remaining}
                         dailyLimit={subscription.limits.daily_credits}
-                        dailyRequests={0} // Mocking as API doesn't return usage? API spec has limits daily_requests but not CURRENT usage.
+                        dailyRequests={0}
                         dailyRequestsLimit={subscription.limits.daily_requests}
                         monthlyCostCredits={subscription.limits.monthly_cost_credits}
                     />
@@ -160,6 +168,9 @@ const PlansView: React.FC<PlansViewProps> = ({ onDone }) => {
                 isDowngrade={isDowngrade}
                 client={client}
                 onSuccess={handleUpgradeSuccess}
+                email={apiConfiguration?.agenticaEmail || "your account"}
+                currentCredits={userCredits}
+                planCost={selectedPlan?.cost || 0}
             />
         </div>
     )

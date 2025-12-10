@@ -1,5 +1,4 @@
 import React from "react"
-import { Button } from "@/components/ui/button"
 import { VSCodeButton, VSCodeTag } from "@vscode/webview-ui-toolkit/react"
 
 interface PlanCardProps {
@@ -29,47 +28,35 @@ export const PlanCard: React.FC<PlanCardProps> = ({
     const isDowngrade = ["free", "plus", "pro", "max"].indexOf(planId) < ["free", "plus", "pro", "max"].indexOf(currentPlanId)
     const isScheduled = scheduledDowngrade === planId
 
-    // Determine styling based on plan
-    const getPlanColor = () => {
-        switch (planId) {
-            case "max":
-                return "var(--vscode-charts-purple)"
-            case "pro":
-                return "var(--vscode-charts-blue)"
-            case "plus":
-                return "var(--vscode-charts-green)"
-            default:
-                return "var(--vscode-descriptionForeground)"
-        }
-    }
-
     return (
         <div
             style={{
-                border: isCurrent ? `2px solid ${getPlanColor()}` : "1px solid var(--vscode-widget-border)",
-                padding: "16px",
-                borderRadius: "8px",
+                border: isCurrent ? "1px solid var(--vscode-focusBorder)" : "1px solid var(--vscode-widget-border)",
+                padding: "20px",
+                borderRadius: "6px",
                 display: "flex",
                 flexDirection: "column",
-                gap: "12px",
+                gap: "16px",
                 position: "relative",
-                background: isCurrent ? "var(--vscode-editor-inactiveSelectionBackground)" : "transparent",
+                background: isCurrent ? "var(--vscode-editor-inactiveSelectionBackground)" : "var(--vscode-editor-background)",
+                boxShadow: isCurrent ? "0 0 8px rgba(0, 0, 0, 0.2)" : "none",
             }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <h3 style={{ margin: 0, fontSize: "1.2em", fontWeight: "bold", color: getPlanColor() }}>
+                <h3 style={{ margin: 0, fontSize: "1.1em", fontWeight: "600", color: "var(--vscode-foreground)" }}>
                     {planId.charAt(0).toUpperCase() + planId.slice(1)}
                 </h3>
                 {isCurrent && <VSCodeTag>Current</VSCodeTag>}
                 {isScheduled && <VSCodeTag>Scheduled</VSCodeTag>}
             </div>
 
-            <div style={{ fontSize: "1.5em", fontWeight: "bold" }}>
-                {price} <span style={{ fontSize: "0.6em", fontWeight: "normal", color: "var(--vscode-descriptionForeground)" }}>/ {period}</span>
+            <div style={{ fontSize: "1.8em", fontWeight: "bold", color: "var(--vscode-foreground)" }}>
+                {price} <span style={{ fontSize: "0.5em", fontWeight: "normal", color: "var(--vscode-descriptionForeground)" }}>/ {period}</span>
             </div>
 
-            <ul style={{ paddingLeft: "20px", margin: "0", color: "var(--vscode-foreground)", fontSize: "0.9em" }}>
+            <ul style={{ paddingLeft: "0", listStyle: "none", margin: "0", color: "var(--vscode-foreground)", fontSize: "0.9em", lineHeight: "1.6" }}>
                 {features.map((feature, i) => (
-                    <li key={i} style={{ marginBottom: "4px" }}>
+                    <li key={i} style={{ display: "flex", alignItems: "center", marginBottom: "6px" }}>
+                        <span style={{ marginRight: "8px", color: "var(--vscode-charts-green)" }}>✓</span>
                         {feature}
                     </li>
                 ))}
@@ -77,7 +64,7 @@ export const PlanCard: React.FC<PlanCardProps> = ({
 
             <div style={{ marginTop: "auto" }}>
                 {isCurrent ? (
-                    <VSCodeButton disabled style={{ width: "100%" }} appearance="secondary">
+                    <VSCodeButton disabled style={{ width: "100%", opacity: 0.6 }} appearance="secondary">
                         Active
                     </VSCodeButton>
                 ) : (
