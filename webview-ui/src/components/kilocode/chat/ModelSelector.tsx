@@ -1,4 +1,4 @@
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
 import { SelectDropdown, DropdownOptionType } from "@/components/ui"
 import { OPENROUTER_DEFAULT_PROVIDER_NAME, type ProviderSettings } from "@roo-code/types"
 import { vscode } from "@src/utils/vscode"
@@ -8,14 +8,35 @@ import { prettyModelName } from "../../../utils/prettyModelName"
 import { useProviderModels } from "../hooks/useProviderModels"
 import { getModelIdKey, getSelectedModelId } from "../hooks/useSelectedModel"
 import { usePreferredModels } from "@/components/ui/hooks/kilocode/usePreferredModels"
+import { AgenticaClient } from "@/services/AgenticaClient"
+import { UpgradeModal } from "../../settings/UpgradeModal"
 
 // Helper function to format cost for Agentica models
-const formatAgenticaCost = (creditsMultiplier?: number): string => {
-	if (creditsMultiplier === undefined || creditsMultiplier === 0) {
+const formatAgenticaCost = (modelInfo?: any): string => {
+	if (!modelInfo) return "Free"
+
+	// Check if model requires paid plan (paid-free models)
+	if (modelInfo.requiresPaidPlan) {
 		return "Free"
 	}
-	const cost = creditsMultiplier * 0.001
-	return `$${cost.toFixed(3)}`
+
+	// Check if model has token-based pricing (premium models)
+	if (modelInfo.inputPrice !== undefined && modelInfo.outputPrice !== undefined &&
+	    (modelInfo.inputPrice > 0 || modelInfo.outputPrice > 0)) {
+		// For premium models, show a generic "Premium" label since token costs vary
+		return "Premium"
+	}
+
+	// Check if model has credit-based pricing (free models)
+	if (modelInfo.creditsMultiplier !== undefined) {
+		if (modelInfo.creditsMultiplier === 0) {
+			return "Free"
+		}
+		const cost = modelInfo.creditsMultiplier * 0.001
+		return `$${cost.toFixed(3)}`
+	}
+
+	return "Free"
 }
 
 interface ModelSelectorProps {
@@ -41,6 +62,10 @@ export const ModelSelector = ({
 	const modelIdKey = getModelIdKey({ provider })
 
 	const modelsIds = usePreferredModels(providerModels)
+
+	// Agentica subscription and upgrade modal state
+	const [upgradeModalOpen, setUpgradeModalOpen] = useState(false)
+	const [agenticaClient, setAgenticaClient] = useState<AgenticaClient | null>(null)
 	const options = useMemo(() => {
 		const missingModelIds = modelsIds.indexOf(selectedModelId) >= 0 ? [] : [selectedModelId]
 		return missingModelIds.concat(modelsIds).map((modelId) => {
@@ -49,8 +74,8 @@ export const ModelSelector = ({
 			
 			// Add cost information for Agentica models
 			let label = modelName
-			if (provider === "agentica" && modelInfo?.creditsMultiplier !== undefined) {
-				const cost = formatAgenticaCost(modelInfo.creditsMultiplier)
+			if (provider === "agentica" && modelInfo) {
+				const cost = formatAgenticaCost(modelInfo)
 				label = `${modelName} (${cost})`
 			}
 			
@@ -64,7 +89,7 @@ export const ModelSelector = ({
 
 	const disabled = isLoading || isError
 
-	const onChange = (value: string) => {
+	const onChange = async (value: string) => {
 		if (!currentApiConfigName) {
 			return
 		}
@@ -72,6 +97,32 @@ export const ModelSelector = ({
 			// don't reset openRouterSpecificProvider
 			return
 		}
+
+		// Check if this is a premium/paid Agentica model and user needs to upgrade
+		const modelInfo = providerModels[value]
+		if (provider === "agentica" && modelInfo &&
+		    (modelInfo.requiresPaidPlan ||
+		     (modelInfo.inputPrice && modelInfo.inputPrice > 0) ||
+		     (modelInfo.outputPrice && modelInfo.outputPrice > 0))) {
+			try {
+				const client = new AgenticaClient(
+					`${apiConfiguration?.agenticaEmail || ""}|${apiConfiguration?.agenticaPassword || ""}`,
+					apiConfiguration?.agenticaBaseUrl,
+				)
+				setAgenticaClient(client)
+				const subscription = await client.getSubscription()
+
+				// If user doesn't have premium access, show upgrade modal
+				if (!subscription.limits.allow_premium) {
+					setUpgradeModalOpen(true)
+					return
+				}
+			} catch (error) {
+				console.error("Failed to check Agentica subscription:", error)
+				// If we can't check subscription, allow the change (fail open)
+			}
+		}
+
 		vscode.postMessage({
 			type: "upsertApiConfiguration",
 			text: currentApiConfigName,
@@ -102,19 +153,35 @@ export const ModelSelector = ({
 	}
 
 	return (
-		<SelectDropdown
-			value={selectedModelId}
-			disabled={disabled}
-			title={t("chat:selectApiConfig")}
-			options={options}
-			onChange={onChange}
-			contentClassName="max-h-[300px] overflow-y-auto"
-			triggerClassName={cn(
-				"w-full text-ellipsis overflow-hidden p-0",
-				"bg-transparent border-transparent hover:bg-transparent hover:border-transparent",
+		<>
+			<SelectDropdown
+				value={selectedModelId}
+				disabled={disabled}
+				title={t("chat:selectApiConfig")}
+				options={options}
+				onChange={onChange}
+				contentClassName="max-h-[300px] overflow-y-auto"
+				triggerClassName={cn(
+					"w-full text-ellipsis overflow-hidden p-0",
+					"bg-transparent border-transparent hover:bg-transparent hover:border-transparent",
+				)}
+				triggerIcon={false}
+				itemClassName="group"
+			/>
+
+			{agenticaClient && (
+				<UpgradeModal
+					isOpen={upgradeModalOpen}
+					onClose={() => setUpgradeModalOpen(false)}
+					planId="pro" // Default to pro plan for premium models
+					isDowngrade={false}
+					client={agenticaClient}
+					onSuccess={() => {
+						// Could refresh subscription data here if needed
+						setUpgradeModalOpen(false)
+					}}
+				/>
 			)}
-			triggerIcon={false}
-			itemClassName="group"
-		/>
+		</>
 	)
 }

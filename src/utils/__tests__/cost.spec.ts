@@ -149,6 +149,22 @@ describe("Cost Utility", () => {
 			expect(result.totalInputTokens).toBe(1000)
 			expect(result.totalOutputTokens).toBe(500)
 		})
+
+		it("should apply token-based pricing for premium models", () => {
+			const premiumModel: ModelInfo = {
+				...mockModelInfo,
+				inputPrice: 3.0, // $3 per million input tokens
+				outputPrice: 15.0, // $15 per million output tokens
+				// No creditsMultiplier - uses token pricing instead
+			}
+
+			const result = calculateApiCostAnthropic(premiumModel, 1000, 500)
+
+			// Cost = (1000 * 3.0 / 1M) + (500 * 15.0 / 1M) = 0.003 + 0.0075 = $0.0105
+			expect(result.totalCost).toBe(0.0105)
+			expect(result.totalInputTokens).toBe(1000)
+			expect(result.totalOutputTokens).toBe(500)
+		})
 	})
 
 	describe("calculateApiCostOpenAI", () => {

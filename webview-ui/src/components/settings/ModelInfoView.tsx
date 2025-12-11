@@ -54,14 +54,29 @@ export const ModelInfoView = ({
 			supportsLabel={t("settings:modelInfo.supportsPromptCache")}
 			doesNotSupportLabel={t("settings:modelInfo.noPromptCache")}
 		/>,
-		apiProvider === "agentica" && modelInfo?.creditsMultiplier && (
-			<>
-				<span className="font-medium">{t("settings:modelInfo.creditsMultiplier")}:</span>{" "}
-				{modelInfo.creditsMultiplier === 0 
-					? "Free" 
-					: `${modelInfo.creditsMultiplier}x credits`
-				}
-			</>
+		apiProvider === "agentica" && (
+			modelInfo?.requiresPaidPlan ? (
+				<>
+					<span className="font-medium">Access:</span>{" "}
+					Requires paid plan (no credit cost)
+				</>
+			) : modelInfo?.creditsMultiplier !== undefined ? (
+				<>
+					<span className="font-medium">{t("settings:modelInfo.creditsMultiplier")}:</span>{" "}
+					{modelInfo.creditsMultiplier === 0
+						? "Free"
+						: `${modelInfo.creditsMultiplier}x credits`
+					}
+				</>
+			) : (
+				modelInfo?.inputPrice !== undefined && modelInfo?.outputPrice !== undefined &&
+				(modelInfo.inputPrice > 0 || modelInfo.outputPrice > 0) && (
+					<>
+						<span className="font-medium">Pricing:</span>{" "}
+						${formatPrice(modelInfo.inputPrice)} / 1M input tokens, ${formatPrice(modelInfo.outputPrice)} / 1M output tokens
+					</>
+				)
+			)
 		),
 		apiProvider === "gemini" && (
 			<span className="italic">
